@@ -6,10 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.data.User;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Constants;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Steps;
+import site.nomoreparties.stellarburgers.constants.Constants;
+import site.nomoreparties.stellarburgers.steps.UserSteps;
 
-public class CreateUserTest extends Steps {
+public class CreateUserTest {
+
+    UserSteps userSteps = new UserSteps();
 
     private User user;
 
@@ -22,9 +24,9 @@ public class CreateUserTest extends Steps {
     @DisplayName("Создание нового пользователя")
     public void createOneNewUser() {
 
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        checkSuccessCreateNewUser(user);
+        userSteps.checkSuccessCreateNewUser(user);
 
     }
 
@@ -33,14 +35,14 @@ public class CreateUserTest extends Steps {
     public void createTwoUsersWithSameEmail() {
 
         //Создаем нового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        checkSuccessCreateNewUser(user);
+        userSteps.checkSuccessCreateNewUser(user);
 
         //Пытаемся создать второго пользователя с таким же email
         User secondUser = new User(user.getEmail(), "qwerty54321", "Петров Петр");
 
-        checkErrorWhenCreatingUserWithExistingEmail(secondUser);
+        userSteps.checkErrorWhenCreatingUserWithExistingEmail(secondUser);
 
     }
 
@@ -48,7 +50,7 @@ public class CreateUserTest extends Steps {
     @DisplayName("Создание нового пользователя с незаполненным email")
     public void createNewUserWithoutEmail() {
 
-        checkErrorWhenCreatingUserNoRequiredFields(null, "qwerty12345", "Иванов Иван");
+        userSteps.checkErrorWhenCreatingUserNoRequiredFields(null, "qwerty12345", "Иванов Иван");
 
     }
 
@@ -56,7 +58,7 @@ public class CreateUserTest extends Steps {
     @DisplayName("Создание нового пользователя с незаполненным паролем")
     public void createNewUserWithoutPassword() {
 
-        checkErrorWhenCreatingUserNoRequiredFields(getRandomUserEmail(), null, "Иванов Иван");
+        userSteps.checkErrorWhenCreatingUserNoRequiredFields(userSteps.getRandomUserEmail(), null, "Иванов Иван");
 
     }
 
@@ -64,7 +66,7 @@ public class CreateUserTest extends Steps {
     @DisplayName("Создание нового пользователя с незаполненным именем")
     public void createNewUserWithoutName() {
 
-        checkErrorWhenCreatingUserNoRequiredFields(getRandomUserEmail(), "qwerty12345", null);
+        userSteps.checkErrorWhenCreatingUserNoRequiredFields(userSteps.getRandomUserEmail(), "qwerty12345", null);
 
     }
 
@@ -73,7 +75,7 @@ public class CreateUserTest extends Steps {
 
         if (user != null && user.getAccessToken() != null) {
 
-            deleteUser(user);
+            userSteps.deleteUser(user);
             user = null;
 
         }

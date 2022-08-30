@@ -7,12 +7,15 @@ import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.data.Order;
 import site.nomoreparties.stellarburgers.data.User;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Constants;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Steps;
+import site.nomoreparties.stellarburgers.constants.Constants;
+import site.nomoreparties.stellarburgers.steps.*;
 
 import java.util.List;
 
-public class CreateOrderTest extends Steps {
+public class CreateOrderTest {
+
+    UserSteps userSteps = new UserSteps();
+    OrderSteps orderSteps = new OrderSteps();
 
     private User user;
     private Order order;
@@ -23,9 +26,9 @@ public class CreateOrderTest extends Steps {
         RestAssured.baseURI = Constants.URL;
 
         //Создаем тестового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        createNewUserAndSetTokens(user);
+        userSteps.createNewUserAndSetTokens(user);
 
     }
 
@@ -34,12 +37,12 @@ public class CreateOrderTest extends Steps {
     public void createNewOrderWithIngredients() {
 
         //Создаем заказ с ингредиентами
-        order = formingOrderFromIngredients(2);
+        order = orderSteps.formingOrderFromIngredients(2);
 
-        checkSuccessCreateNewOrder(order, user);
+        orderSteps.checkSuccessCreateNewOrder(order, user);
 
         //Проверяем, что созданный заказ существует в списке заказов пользователя
-        checkExistenceOrderInUserOrders(sendRequestGetUserOrders(user), order);
+        orderSteps.checkExistenceOrderInUserOrders(orderSteps.sendRequestGetUserOrders(user), order);
 
     }
 
@@ -48,12 +51,12 @@ public class CreateOrderTest extends Steps {
     public void createNewOrderWithoutIngredients() {
 
         //Создаем заказ без ингредиентов
-        order = formingOrderFromIngredients(0);
+        order = orderSteps.formingOrderFromIngredients(0);
 
-        checkErrorWhenCreatingOrderWithoutIngredients(order, user);
+        orderSteps.checkErrorWhenCreatingOrderWithoutIngredients(order, user);
 
         //Проверяем, что список заказов пользователя пуст
-        checkThatUserHasNoOrders(user);
+        orderSteps.checkThatUserHasNoOrders(user);
 
     }
 
@@ -62,15 +65,15 @@ public class CreateOrderTest extends Steps {
     public void createNewOrderWithIncorrectHashOfIngredients() {
 
         //Создаем заказ с неверным хешем ингредиентов
-        order = formingOrderFromIngredients(2);
+        order = orderSteps.formingOrderFromIngredients(2);
 
         List<String> incorrectIngredients = order.getIngredients();
         incorrectIngredients.set(0, incorrectIngredients.get(0) + "1");
 
-        checkErrorWhenCreatingOrderIncorrectHashOfIngredients(order, user);
+        orderSteps.checkErrorWhenCreatingOrderIncorrectHashOfIngredients(order, user);
 
         //Проверяем, что список заказов пользователя пуст
-        checkThatUserHasNoOrders(user);
+        orderSteps.checkThatUserHasNoOrders(user);
 
     }
 
@@ -78,9 +81,9 @@ public class CreateOrderTest extends Steps {
     @DisplayName("Создание нового заказа без авторизации")
     public void createNewOrderWithoutAuthorization() {
 
-        order = formingOrderFromIngredients(2);
+        order = orderSteps.formingOrderFromIngredients(2);
 
-        checkNotReturnIdAndIngredientsWhenCreatingOrderWithoutAuthorization(order);
+        orderSteps.checkNotReturnIdAndIngredientsWhenCreatingOrderWithoutAuthorization(order);
 
     }
 
@@ -89,7 +92,7 @@ public class CreateOrderTest extends Steps {
 
         if (user != null && user.getAccessToken() != null) {
 
-            deleteUser(user);
+            userSteps.deleteUser(user);
             user = null;
 
         }

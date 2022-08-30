@@ -1,4 +1,4 @@
-package site.nomoreparties.stellarburgers.stepsAndConstants;
+package site.nomoreparties.stellarburgers.constants;
 
 public abstract class Constants {
 

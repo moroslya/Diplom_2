@@ -6,10 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.data.User;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Constants;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Steps;
+import site.nomoreparties.stellarburgers.constants.Constants;
+import site.nomoreparties.stellarburgers.steps.UserSteps;
 
-public class LoginUserTest extends Steps {
+public class LoginUserTest {
+
+    UserSteps userSteps = new UserSteps();
 
     private User user;
 
@@ -23,12 +25,12 @@ public class LoginUserTest extends Steps {
     public void authorizationExistingUser() {
 
         //Создаем нового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        createNewUserAndSetTokens(user);
+        userSteps.createNewUserAndSetTokens(user);
 
         //Авторизуемся созданным пользователем
-        checkSuccessAuthorizationExistingUser(user);
+        userSteps.checkSuccessAuthorizationExistingUser(user);
 
     }
 
@@ -37,9 +39,9 @@ public class LoginUserTest extends Steps {
     public void authorizationWithInvalidEmail() {
 
         //Авторизуемся с незарегистрированным логином
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        checkErrorWhenAuthorizationWithIncorrectData(user);
+        userSteps.checkErrorWhenAuthorizationWithIncorrectData(user);
 
     }
 
@@ -48,14 +50,14 @@ public class LoginUserTest extends Steps {
     public void authorizationWithInvalidPassword() {
 
         //Создаем нового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        createNewUserAndSetTokens(user);
+        userSteps.createNewUserAndSetTokens(user);
 
         //Авторизуемся с неверным паролем
         user.setPassword("qwerty12346");
 
-        checkErrorWhenAuthorizationWithIncorrectData(user);
+        userSteps.checkErrorWhenAuthorizationWithIncorrectData(user);
 
     }
 
@@ -64,7 +66,7 @@ public class LoginUserTest extends Steps {
 
         if (user != null && user.getAccessToken() != null) {
 
-            deleteUser(user);
+            userSteps.deleteUser(user);
             user = null;
 
         }

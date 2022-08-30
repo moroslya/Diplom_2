@@ -7,10 +7,13 @@ import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.data.Order;
 import site.nomoreparties.stellarburgers.data.User;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Constants;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Steps;
+import site.nomoreparties.stellarburgers.constants.Constants;
+import site.nomoreparties.stellarburgers.steps.*;
 
-public class GetUserOrdersTest extends Steps {
+public class GetUserOrdersTest {
+
+    UserSteps userSteps = new UserSteps();
+    OrderSteps orderSteps = new OrderSteps();
 
     private User user;
     private Order order;
@@ -21,14 +24,14 @@ public class GetUserOrdersTest extends Steps {
         RestAssured.baseURI = Constants.URL;
 
         //Создаем тестового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        createNewUserAndSetTokens(user);
+        userSteps.createNewUserAndSetTokens(user);
 
         //Создание тестового заказа
-        order = formingOrderFromIngredients(2);
+        order = orderSteps.formingOrderFromIngredients(2);
 
-        createNewOrderAndSetId(order, user);
+        orderSteps.createNewOrderAndSetId(order, user);
 
     }
 
@@ -36,7 +39,7 @@ public class GetUserOrdersTest extends Steps {
     @DisplayName("Получение заказов пользователя с авторизацией")
     public void getUserOrdersWithAuthorization() {
 
-        checkSuccessGetUserOrdersWithAuthorization(user);
+        orderSteps.checkSuccessGetUserOrdersWithAuthorization(user);
 
     }
 
@@ -44,7 +47,7 @@ public class GetUserOrdersTest extends Steps {
     @DisplayName("Получение заказов пользователя без авторизации")
     public void getUserOrdersWithoutAuthorization() {
 
-        checkErrorWhenGetUserOrdersWithoutAuthorization();
+        orderSteps.checkErrorWhenGetUserOrdersWithoutAuthorization();
 
     }
 
@@ -53,7 +56,7 @@ public class GetUserOrdersTest extends Steps {
 
         if (user != null && user.getAccessToken() != null) {
 
-            deleteUser(user);
+            userSteps.deleteUser(user);
             user = null;
 
         }

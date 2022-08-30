@@ -6,10 +6,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.data.User;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Constants;
-import site.nomoreparties.stellarburgers.stepsAndConstants.Steps;
+import site.nomoreparties.stellarburgers.constants.Constants;
+import site.nomoreparties.stellarburgers.steps.UserSteps;
 
-public class DataUpdateUserTest extends Steps {
+public class DataUpdateUserTest {
+
+    UserSteps userSteps = new UserSteps();
 
     private User user;
 
@@ -18,9 +20,9 @@ public class DataUpdateUserTest extends Steps {
         RestAssured.baseURI = Constants.URL;
 
         //Создаем тестового пользователя
-        user = new User(getRandomUserEmail(), "qwerty12345", "Иванов Иван");
+        user = new User(userSteps.getRandomUserEmail(), "qwerty12345", "Иванов Иван");
 
-        createNewUserAndSetTokens(user);
+        userSteps.createNewUserAndSetTokens(user);
 
     }
 
@@ -29,15 +31,15 @@ public class DataUpdateUserTest extends Steps {
     public void changeUserEmailWithAuthorization() {
 
         //Изменяем email тестовому пользователю
-        user.setEmail(getRandomUserEmail());
+        user.setEmail(userSteps.getRandomUserEmail());
 
-        checkSuccessUserDataUpdateWithAuthorization(user);
+        userSteps.checkSuccessUserDataUpdateWithAuthorization(user);
 
         //Проверяем, что можно авторизоваться с новым email
-        checkSuccessAuthorizationExistingUser(user);
+        userSteps.checkSuccessAuthorizationExistingUser(user);
 
         //Проверяем соответствие email в информации о пользователе новому значению
-        checkCorrectnessUserInformation(user);
+        userSteps.checkCorrectnessUserInformation(user);
 
     }
 
@@ -48,10 +50,10 @@ public class DataUpdateUserTest extends Steps {
         //Изменяем пароль тестовому пользователю
         user.setPassword("qwerty12346");
 
-        checkSuccessUserDataUpdateWithAuthorization(user);
+        userSteps.checkSuccessUserDataUpdateWithAuthorization(user);
 
         //Проверяем, что можно авторизоваться с новым паролем
-        checkSuccessAuthorizationExistingUser(user);
+        userSteps.checkSuccessAuthorizationExistingUser(user);
 
     }
 
@@ -62,10 +64,10 @@ public class DataUpdateUserTest extends Steps {
         //Изменяем имя тестовому пользователю
         user.setName("Петров Петр");
 
-        checkSuccessUserDataUpdateWithAuthorization(user);
+        userSteps.checkSuccessUserDataUpdateWithAuthorization(user);
 
         //Проверяем соответствие имени в информации о пользователе новому значению
-        checkCorrectnessUserInformation(user);
+        userSteps.checkCorrectnessUserInformation(user);
 
     }
 
@@ -76,17 +78,17 @@ public class DataUpdateUserTest extends Steps {
         String oldEmail = user.getEmail();
 
         //Пытаемся изменить email тестовому пользователю без авторизации и получаем ошибку
-        user.setEmail(getRandomUserEmail());
+        user.setEmail(userSteps.getRandomUserEmail());
 
-        checkErrorWhenUserDataUpdateWithoutAuthorization(user);
+        userSteps.checkErrorWhenUserDataUpdateWithoutAuthorization(user);
 
         //Проверяем, что по прежнему можно авторизоваться со старым email
         user.setEmail(oldEmail);
 
-        checkSuccessAuthorizationExistingUser(user);
+        userSteps.checkSuccessAuthorizationExistingUser(user);
 
         //Проверяем соответствие email в информации о пользователе старому значению
-        checkCorrectnessUserInformation(user);
+        userSteps.checkCorrectnessUserInformation(user);
 
     }
 
@@ -99,12 +101,12 @@ public class DataUpdateUserTest extends Steps {
         //Пытаемся изменить пароль тестовому пользователю без авторизации и получаем ошибку
         user.setPassword("qwerty12346");
 
-        checkErrorWhenUserDataUpdateWithoutAuthorization(user);
+        userSteps.checkErrorWhenUserDataUpdateWithoutAuthorization(user);
 
         //Проверяем, что по прежнему можно авторизоваться со старым паролем
         user.setPassword(oldPassword);
 
-        checkSuccessAuthorizationExistingUser(user);
+        userSteps.checkSuccessAuthorizationExistingUser(user);
 
     }
 
@@ -117,12 +119,12 @@ public class DataUpdateUserTest extends Steps {
         //Пытаемся изменить имя тестовому пользователю без авторизации и получаем ошибку
         user.setName("Петров Петр");
 
-        checkErrorWhenUserDataUpdateWithoutAuthorization(user);
+        userSteps.checkErrorWhenUserDataUpdateWithoutAuthorization(user);
 
         //Проверяем соответствие имени в информации о пользователе старому значению
         user.setName(oldName);
 
-        checkCorrectnessUserInformation(user);
+        userSteps.checkCorrectnessUserInformation(user);
 
     }
 
@@ -131,7 +133,7 @@ public class DataUpdateUserTest extends Steps {
 
         if (user != null && user.getAccessToken() != null) {
 
-            deleteUser(user);
+            userSteps.deleteUser(user);
             user = null;
 
         }
